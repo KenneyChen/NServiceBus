@@ -59,11 +59,14 @@
     <Compile Include="Basic\When_extending_behavior_context.cs" />
     <Compile Include="Core\MessageDurability\When_sending_a_non_durable_message_with_conventions.cs" />
     <Compile Include="DataBus\When_sending_databus_properties_with_unobtrusive.cs" />
+    <Compile Include="Basic\When_sending_interface_message_with_conventions.cs" />
     <Compile Include="Encryption\When_using_Rijndael_with_unobtrusive_mode.cs" />
     <Compile Include="Performance\TimeToBeReceived\When_TimeToBeReceived_used_with_unobtrusive_mode.cs" />
     <Compile Include="Recoverability\Retries\When_custom_policy_provided.cs" />
     <Compile Include="Recoverability\When_custom_policy_moves_to_overridden_error_queue.cs" />
     <Compile Include="Recoverability\When_message_is_moved_to_error_queue_with_header_customizations.cs" />
+    <Compile Include="Routing\When_publishing_an_interface_with_unobtrusive.cs" />
+    <Compile Include="Routing\When_replying_to_message_with_interface.cs" />
     <Compile Include="Routing\When_subscribing_to_scaled_out_publisher_on_unicast_transport.cs" />
     <Compile Include="Serialization\When_configuring_custom_xml_namespace.cs" />
     <Compile Include="Serialization\When_registering_additional_deserializers.cs" />

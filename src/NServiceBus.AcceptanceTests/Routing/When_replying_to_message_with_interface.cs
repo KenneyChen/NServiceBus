@@ -2,11 +2,11 @@
 {
     using System.Threading.Tasks;
     using AcceptanceTesting;
+    using AcceptanceTesting.Customization;
     using EndpointTemplates;
     using NUnit.Framework;
-    using Conventions = AcceptanceTesting.Customization.Conventions;
 
-    public class When_replying_to_message : NServiceBusAcceptanceTest
+    public class When_replying_to_message_with_interface_and_unobtrusive : NServiceBusAcceptanceTest
     {
         [Test]
         public async Task Should_reply_to_originator()
@@ -49,7 +49,8 @@
         {
             public SendingEndpoint()
             {
-                EndpointSetup<DefaultPublisher>().AddMapping<MyMessage>(typeof(ReplyingEndpoint));
+                EndpointSetup<DefaultPublisher>(c => c.Conventions().DefiningMessagesAs(t => t.Namespace != null && t.Name.StartsWith("My")))
+                    .AddMapping<MyMessage>(typeof(ReplyingEndpoint));
             }
 
             public class ResponseHandler : IHandleMessages<MyReply>
@@ -68,7 +69,7 @@
         {
             public OtherEndpoint()
             {
-                EndpointSetup<DefaultServer>();
+                EndpointSetup<DefaultServer>(c => c.Conventions().DefiningMessagesAs(t => t.Namespace != null && t.Name.StartsWith("My")));
             }
 
             public class ResponseHandler : IHandleMessages<MyReply>
@@ -87,23 +88,24 @@
         {
             public ReplyingEndpoint()
             {
-                EndpointSetup<DefaultServer>();
+                EndpointSetup<DefaultServer>(c => c.Conventions().DefiningMessagesAs(t => t.Namespace != null && t.Name.StartsWith("My")))
+                    .ExcludeType<MyReply>(); // remove that type from assembly scanning to simulate what would happen with true unobtrusive mode
             }
 
             public class MessageHandler : IHandleMessages<MyMessage>
             {
                 public Task Handle(MyMessage message, IMessageHandlerContext context)
                 {
-                    return context.Reply(new MyReply());
+                    return context.Reply<MyReply>(m => { });
                 }
             }
         }
 
-        public class MyMessage : IMessage
+        public class MyMessage
         {
         }
 
-        public class MyReply : IMessage
+        public interface MyReply
         {
         }
     }
